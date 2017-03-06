@@ -2,38 +2,48 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//Searches through the graph
 public class Search
 {
+    //Creating references for nodes, and graph
     public Graph graph;
-    public List<Node> reachable;
-    public List<Node> explored;
+    public List<Node> reachable; //Open
+    public List<Node> explored;  //Closed
     public List<Node> path;
     public Node targetNode;
+
+    //Tracks how many iterations have been completed for debug purposes
     public int iterations;
     public bool finished;
 
+    //Constructor : takes a graph
     public Search(Graph graph)
     {
         this.graph = graph;
     }
 
+    //Create the search method which takes in a start and target node
     public void Start(Node start, Node target)
     {
+        //Add the start node to the reachable/open list
         reachable = new List<Node>();
         reachable.Add(start);
 
         targetNode = target;
 
+        //Create the explored/closed list and path list
         explored = new List<Node>();
         path = new List<Node>();
         iterations = 0;
 
+        //Clear the graph in case we have ran this previously
         for(var i = 0; i < graph.nodes.Length; i++)
         {
             graph.nodes[i].Clear();
         }
     }
 
+    //
     public void Step()
     {
         if (path.Count > 0)

@@ -23,6 +23,7 @@ public class Graph
             nodes[i] = node;
         }
 
+        //Fill the array with empty nodes and label each node with its position
         for (var r = 0; r < rows; r++)
         {
             for (var c = 0; c < columns; c++)
@@ -37,24 +38,28 @@ public class Graph
                 }
 
                 //Up
+                //Add any node above the current one
                 if(r > 0)
                 {
                     node.adjacent.Add(nodes[columns * (r - 1) + c]);
                 }
 
                 //Right
+                //Looks for any node to the right of the current node
                 if (c < columns - 1)
                 {
                     node.adjacent.Add(nodes[columns * r + c + 1]);
                 }
 
                 //Down
+                //Looks for any nodes below the current one
                 if (r < rows - 1)
                 {
                     node.adjacent.Add(nodes[columns * (r + 1) + c]);
                 }
 
                 //Left
+                //Looks for any nodes to the left of the current node
                 if (c > 0)
                 {
                     node.adjacent.Add(nodes[columns * r + c - 1]);
