@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 //Searches through the graph
-public class Search
+public class Search : MonoBehaviour
 {
     //Creating references for nodes, and graph
     public Graph graph;
     public List<Node> reachable; //Open
     public List<Node> explored;  //Closed
     public List<Node> path;
+    public Node startNode;
     public Node targetNode;
 
     //Tracks how many iterations have been completed for debuging purposes
@@ -20,6 +21,11 @@ public class Search
     public Search(Graph graph)
     {
         this.graph = graph;
+    }
+
+    void Awake()
+    {
+        graph = GetComponent<Graph>();
     }
 
     //Create the search method which takes in a start and target node
@@ -37,10 +43,10 @@ public class Search
         iterations = 0;
 
         //Clear the graph in case we have ran this previously
-        for(var i = 0; i < graph.nodes.Length; i++)
+        /*for(var i = 0; i < graph.nodes.Length; i++)
         {
             graph.nodes[i].Clear();
-        }
+        }*/
     }
 
     //Checks possible moves that can be made
@@ -136,11 +142,44 @@ public class Search
         while(reachable.Count > 0)
         {
             Node currentNode = reachable[0];
-            for (int i = 0; i < reachable.Count; i++)
+            //Check which node has the lowest f cost
+            //If the f cost is the same, the one closest to the end node will get chosen
+            for (int i = 1; i < reachable.Count; i++)
             {
                 if(reachable[i].f < currentNode.f || reachable[i].f == currentNode.f && reachable[i].h < currentNode.h)
                 {
                     currentNode = reachable[i];
+                }
+            }
+
+            //Remove node from open list and add it to the closed list
+            reachable.Remove(currentNode);
+            explored.Add(currentNode);
+
+            if(currentNode == targetNode)
+            {
+                return;
+            }
+
+            foreach(Node adjacent in currentNode.adjacent)
+            {
+                if(!adjacent.walkable || explored.Contains(adjacent))
+                {
+                    continue;
+                }
+
+                int newMovementCostToNeighbout = currentNode.g + GetDistance(currentNode, adjacent);
+
+                if(newMovementCostToNeighbout < adjacent.g || !reachable.Contains(adjacent))
+                {
+                    adjacent.g = newMovementCostToNeighbout;
+                    adjacent.h = GetDistance(adjacent, targetNode);
+                    adjacent.parent = currentNode;
+
+                    if(!reachable.Contains(adjacent))
+                    {
+                        reachable.Add(adjacent);
+                    }
                 }
             }
         }
